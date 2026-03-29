@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { connectDB } from "./db.js";
 
 import shipRoutes from "./routes/shipRoutes.js";
 import portRoutes from "./routes/portRoutes.js";
@@ -18,6 +19,18 @@ app.use("/voyages", voyageRoutes);
 app.use("/cargo", cargoRoutes);
 app.use("/crew", crewRoutes);
 
-app.listen(5000, () => {
-  console.log("Backend running on port 5000");
+app.get("/health", (req, res) => {
+  res.json({ message: "Backend is running" });
 });
+
+const PORT = Number(process.env.PORT) || 5000;
+
+try {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Backend running on port ${PORT}`);
+  });
+} catch (err) {
+  console.error("Failed to start backend:", err.message);
+  process.exit(1);
+}

@@ -1,44 +1,95 @@
-import db from "../db.js";
+import { getCollection, nextNumericId } from "../db.js";
+
+const COLLECTION = "cargo";
+
+const toNumberOrKeep = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : value;
+};
 
 export const getCargo = async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM cargo");
-  res.json(rows);
+  try {
+    const rows = await getCollection(COLLECTION)
+      .find({}, { projection: { _id: 0 } })
+      .sort({ cargo_id: 1 })
+      .toArray();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const getCargoById = async (req, res) => {
-  const { id } = req.params;
-  const [rows] = await db.query("SELECT * FROM cargo WHERE cargo_id = ?", [
-    id,
-  ]);
-  res.json(rows[0]);
+  try {
+    const id = Number(req.params.id);
+    const cargo = await getCollection(COLLECTION).findOne(
+      { cargo_id: id },
+      { projection: { _id: 0 } }
+    );
+
+    if (!cargo) return res.status(404).json({ message: "Cargo not found" });
+    res.json(cargo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const createCargo = async (req, res) => {
-  const { cargo_type, weight, voyage_id } = req.body;
+  try {
+    const { cargo_type, weight, voyage_id } = req.body;
+    const cargo_id = await nextNumericId(COLLECTION, "cargo_id");
 
-  await db.query(
-    "INSERT INTO cargo (cargo_type, weight, voyage_id) VALUES (?, ?, ?)",
-    [cargo_type, weight, voyage_id]
-  );
+    const newCargo = {
+      cargo_id,
+      cargo_type,
+      weight: toNumberOrKeep(weight),
+      voyage_id: toNumberOrKeep(voyage_id),
+    };
 
-  res.json({ message: "Cargo added successfully" });
+    await getCollection(COLLECTION).insertOne(newCargo);
+    res.status(201).json(newCargo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const updateCargo = async (req, res) => {
-  const { id } = req.params;
-  const { cargo_type, weight, voyage_id } = req.body;
+  try {
+    const id = Number(req.params.id);
+    const { cargo_type, weight, voyage_id } = req.body;
 
-  await db.query(
-    "UPDATE cargo SET cargo_type=?, weight=?, voyage_id=? WHERE cargo_id=?",
-    [cargo_type, weight, voyage_id, id]
-  );
+    const result = await getCollection(COLLECTION).updateOne(
+      { cargo_id: id },
+      {
+        $set: {
+          cargo_type,
+          weight: toNumberOrKeep(weight),
+          voyage_id: toNumberOrKeep(voyage_id),
+        },
+      }
+    );
 
-  res.json({ message: "Cargo updated successfully" });
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Cargo not found" });
+    }
+
+    res.json({ message: "Cargo updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const deleteCargo = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const id = Number(req.params.id);
+    const result = await getCollection(COLLECTION).deleteOne({ cargo_id: id });
 
-  await db.query("DELETE FROM cargo WHERE cargo_id=?", [id]);
-  res.json({ message: "Cargo deleted successfully" });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Cargo not found" });
+    }
+
+    res.json({ message: "Cargo deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

@@ -1,78 +1,115 @@
-import db from "../db.js";
+import { getCollection, nextNumericId } from "../db.js";
+
+const COLLECTION = "voyage";
+
+const toNumberOrKeep = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : value;
+};
 
 export const getVoyages = async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM voyage");
-  res.json(rows);
+  try {
+    const rows = await getCollection(COLLECTION)
+      .find({}, { projection: { _id: 0 } })
+      .sort({ voyage_id: 1 })
+      .toArray();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const getVoyage = async (req, res) => {
-  const { id } = req.params;
-  const [rows] = await db.query("SELECT * FROM voyage WHERE voyage_id = ?", [
-    id,
-  ]);
-  res.json(rows[0]);
+  try {
+    const id = Number(req.params.id);
+    const voyage = await getCollection(COLLECTION).findOne(
+      { voyage_id: id },
+      { projection: { _id: 0 } }
+    );
+
+    if (!voyage) return res.status(404).json({ message: "Voyage not found" });
+    res.json(voyage);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const createVoyage = async (req, res) => {
-  const {
-    voyage_name,
-    ship_id,
-    departure_port,
-    arrival_port,
-    departure_date,
-    arrival_date,
-  } = req.body;
-
-  await db.query(
-    `INSERT INTO voyage 
-    (voyage_name, ship_id, departure_port, arrival_port, departure_date, arrival_date)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [
+  try {
+    const {
       voyage_name,
       ship_id,
       departure_port,
       arrival_port,
       departure_date,
       arrival_date,
-    ]
-  );
+    } = req.body;
 
-  res.json({ message: "Voyage added successfully" });
+    const voyage_id = await nextNumericId(COLLECTION, "voyage_id");
+    const newVoyage = {
+      voyage_id,
+      voyage_name,
+      ship_id: toNumberOrKeep(ship_id),
+      departure_port,
+      arrival_port,
+      departure_date,
+      arrival_date,
+    };
+
+    await getCollection(COLLECTION).insertOne(newVoyage);
+    res.status(201).json(newVoyage);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const updateVoyage = async (req, res) => {
-  const { id } = req.params;
-  const {
-    voyage_name,
-    ship_id,
-    departure_port,
-    arrival_port,
-    departure_date,
-    arrival_date,
-  } = req.body;
-
-  await db.query(
-    `UPDATE voyage SET 
-    voyage_name=?, ship_id=?, departure_port=?, arrival_port=?, 
-    departure_date=?, arrival_date=?
-    WHERE voyage_id=?`,
-    [
+  try {
+    const id = Number(req.params.id);
+    const {
       voyage_name,
       ship_id,
       departure_port,
       arrival_port,
       departure_date,
       arrival_date,
-      id,
-    ]
-  );
+    } = req.body;
 
-  res.json({ message: "Voyage updated successfully" });
+    const result = await getCollection(COLLECTION).updateOne(
+      { voyage_id: id },
+      {
+        $set: {
+          voyage_name,
+          ship_id: toNumberOrKeep(ship_id),
+          departure_port,
+          arrival_port,
+          departure_date,
+          arrival_date,
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Voyage not found" });
+    }
+
+    res.json({ message: "Voyage updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const deleteVoyage = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const id = Number(req.params.id);
+    const result = await getCollection(COLLECTION).deleteOne({ voyage_id: id });
 
-  await db.query("DELETE FROM voyage WHERE voyage_id=?", [id]);
-  res.json({ message: "Voyage deleted successfully" });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Voyage not found" });
+    }
+
+    res.json({ message: "Voyage deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed": "node scripts/seed_all.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +16,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "mysql2": "^3.15.3"
+    "dotenv": "^16.6.1",
+    "mongodb": "^6.18.0"
   }
 }

@@ -1,39 +1,79 @@
-import db from "../db.js";
+import { getCollection, nextNumericId } from "../db.js";
+
+const COLLECTION = "port";
 
 export const getPorts = async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM port");
-  res.json(rows);
+  try {
+    const rows = await getCollection(COLLECTION)
+      .find({}, { projection: { _id: 0 } })
+      .sort({ port_id: 1 })
+      .toArray();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const getPort = async (req, res) => {
-  const { id } = req.params;
-  const [rows] = await db.query("SELECT * FROM port WHERE port_id = ?", [id]);
-  res.json(rows[0]);
+  try {
+    const id = Number(req.params.id);
+    const port = await getCollection(COLLECTION).findOne(
+      { port_id: id },
+      { projection: { _id: 0 } }
+    );
+
+    if (!port) return res.status(404).json({ message: "Port not found" });
+    res.json(port);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const createPort = async (req, res) => {
-  const { port_name, country } = req.body;
-  await db.query(
-    "INSERT INTO port (port_name, country) VALUES (?, ?)",
-    [port_name, country]
-  );
-  res.json({ message: "Port added successfully" });
+  try {
+    const { port_name, country } = req.body;
+    const port_id = await nextNumericId(COLLECTION, "port_id");
+
+    const newPort = { port_id, port_name, country };
+    await getCollection(COLLECTION).insertOne(newPort);
+
+    res.status(201).json(newPort);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const updatePort = async (req, res) => {
-  const { id } = req.params;
-  const { port_name, country } = req.body;
+  try {
+    const id = Number(req.params.id);
+    const { port_name, country } = req.body;
 
-  await db.query(
-    "UPDATE port SET port_name=?, country=? WHERE port_id=?",
-    [port_name, country, id]
-  );
-  res.json({ message: "Port updated" });
+    const result = await getCollection(COLLECTION).updateOne(
+      { port_id: id },
+      { $set: { port_name, country } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Port not found" });
+    }
+
+    res.json({ message: "Port updated" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const deletePort = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const id = Number(req.params.id);
+    const result = await getCollection(COLLECTION).deleteOne({ port_id: id });
 
-  await db.query("DELETE FROM port WHERE port_id=?", [id]);
-  res.json({ message: "Port deleted" });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Port not found" });
+    }
+
+    res.json({ message: "Port deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

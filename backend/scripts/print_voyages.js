@@ -1,14 +1,16 @@
-import db from '../db.js'
+import { connectDB, getCollection } from '../db.js'
 
 async function printVoyages(){
   try{
-    const [rows] = await db.query('SELECT * FROM voyage')
+    await connectDB()
+    const rows = await getCollection('voyage')
+      .find({}, { projection: { _id: 0 } })
+      .sort({ voyage_id: 1 })
+      .toArray()
     console.log('Voyages:', JSON.stringify(rows, null, 2))
   }catch(e){
     console.error('Error querying voyages:', e.message)
     process.exitCode = 1
-  }finally{
-    try{ await db.end() }catch(e){}
   }
 }
 

@@ -1,47 +1,97 @@
-import db from "../db.js";
+import { getCollection, nextNumericId } from "../db.js";
+
+const COLLECTION = "crew";
+
+const toNumberOrKeep = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : value;
+};
 
 export const getCrew = async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM crew");
-  res.json(rows);
+  try {
+    const rows = await getCollection(COLLECTION)
+      .find({}, { projection: { _id: 0 } })
+      .sort({ crew_id: 1 })
+      .toArray();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const getCrewById = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const id = Number(req.params.id);
+    const crew = await getCollection(COLLECTION).findOne(
+      { crew_id: id },
+      { projection: { _id: 0 } }
+    );
 
-  const [rows] = await db.query("SELECT * FROM crew WHERE crew_id = ?", [id]);
-  res.json(rows[0]);
+    if (!crew) return res.status(404).json({ message: "Crew member not found" });
+    res.json(crew);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const createCrew = async (req, res) => {
-  const { crew_name, rank, joining_date, ship_id } = req.body;
+  try {
+    const { crew_name, rank, joining_date, ship_id } = req.body;
+    const crew_id = await nextNumericId(COLLECTION, "crew_id");
 
-  await db.query(
-    "INSERT INTO crew (crew_name, rank, joining_date, ship_id) VALUES (?, ?, ?, ?)",
-    [crew_name, rank, joining_date, ship_id]
-  );
+    const newCrew = {
+      crew_id,
+      crew_name,
+      rank,
+      joining_date,
+      ship_id: toNumberOrKeep(ship_id),
+    };
 
-  res.json({ message: "Crew member added successfully" });
+    await getCollection(COLLECTION).insertOne(newCrew);
+    res.status(201).json(newCrew);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const updateCrew = async (req, res) => {
-  const { id } = req.params;
-  const { crew_name, rank, joining_date, ship_id } = req.body;
+  try {
+    const id = Number(req.params.id);
+    const { crew_name, rank, joining_date, ship_id } = req.body;
 
-  await db.query(
-    "UPDATE crew SET crew_name=?, rank=?, joining_date=?, ship_id=? WHERE crew_id=?",
-    [crew_name, rank, joining_date, ship_id, id]
-  );
+    const result = await getCollection(COLLECTION).updateOne(
+      { crew_id: id },
+      {
+        $set: {
+          crew_name,
+          rank,
+          joining_date,
+          ship_id: toNumberOrKeep(ship_id),
+        },
+      }
+    );
 
-  res.json({ message: "Crew updated successfully" });
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Crew member not found" });
+    }
+
+    res.json({ message: "Crew updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 export const deleteCrew = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    await db.query("DELETE FROM crew WHERE crew_id=?", [id]);
+    const id = Number(req.params.id);
+    const result = await getCollection(COLLECTION).deleteOne({ crew_id: id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Crew member not found" });
+    }
+
     res.json({ message: "Crew deleted successfully" });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
