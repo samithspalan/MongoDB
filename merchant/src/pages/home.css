@@ -1,0 +1,218 @@
+/* Home page styles - isolated from global */
+
+.home-root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.modern-hero {
+    max-height: 400px;
+}
+.home-root .modern-hero {
+  padding: 3.5rem 2rem;
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  min-height: auto;
+}
+
+.home-root .modern-hero .hero-inner.grid {
+  max-width: none;
+  
+  margin: 0;
+  width: 100%;
+  padding: 2rem 3rem;
+  grid-template-columns: 1fr;
+  max-width: 100%;
+}
+
+.home-root .modern-hero .hero-card {
+  display: none;
+}
+
+.home-root .hero-large-loop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 100px;
+  max-height: 300px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.home-root .hero-large-loop .loop-text {
+  font-size: 1.6rem;
+  line-height: 1.02;
+  font-weight: 800;
+  white-space: normal;
+  overflow: visible;
+  display: inline-block;
+  max-width: 100%;
+  text-align: center;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  min-width: 0;
+}
+
+.home-root .hero-large-loop .loop-cursor {
+  display: none !important;
+}
+
+@media (min-width: 900px) {
+  .home-root .hero-large-loop .loop-text {
+    font-size: 2.2rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .home-root .hero-large-loop .loop-text {
+    font-size: 3rem;
+  }
+}
+
+.home-root .hero-actions {
+  margin-top: 1rem;
+}
+
+.hero-actions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.home-root .features {
+  margin-top: 2rem;
+}
+
+.home-root .modern-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-root .feature {
+  padding: 2.5rem;
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.home-root .feature:nth-child(1) {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.home-root .feature:nth-child(2) {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.home-root .feature:nth-child(3) {
+  background: rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+.home-root .feature:nth-child(4) {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.home-root .feature:nth-child(5) {
+  background: rgba(236, 72, 153, 0.1);
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.home-root .feature:hover {
+  transform: scale(1.05);
+}
+
+.home-root .feature:nth-child(1):hover {
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.home-root .feature:nth-child(2):hover {
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.home-root .feature:nth-child(3):hover {
+  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.3);
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+.home-root .feature:nth-child(4):hover {
+  box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.home-root .feature:nth-child(5):hover {
+  box-shadow: 0 20px 40px rgba(236, 72, 153, 0.3);
+  border-color: rgba(236, 72, 153, 0.5);
+}
+
+.home-root .feature .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.home-root .feature h3 {
+  font-size: 1.5rem;
+  margin: 1rem 0 0.75rem 0;
+  font-weight: 600;
+}
+
+.home-root .feature p {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .home-root .modern-features {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+  }
+  
+  .home-root .feature {
+    padding: 2rem;
+  }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.btn{
+    align-items: center;
+    border-radius: 8px;
+    border: none;
+    justify-content: center;
+}
+.btn:hover{
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+    color: var(--btn-hover-text);
+}

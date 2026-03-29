@@ -1,0 +1,11 @@
+# Dependencies
+backend/node_modules/
+merchant/node_modules/
+
+# Build output
+merchant/dist/
+merchant/dist-ssr/
+
+# Environment files
+backend/.env
+merchant/.env

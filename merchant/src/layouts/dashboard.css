@@ -1,0 +1,14 @@
+.dash-header{transition:box-shadow .2s, background .2s}
+.dash-header .header-left{display:flex;align-items:center;gap:0.75rem}
+.dash-header .brand{font-weight:700}
+.dash-sidebar .logout{margin-top:0.6rem;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:0.5rem;text-align:left}
+.dash-sidebar .logout:hover{color:var(--accent)}
+
+/* subtle motion on scroll for icons */
+.dash-header .icon{transition:transform 0.18s cubic-bezier(.2,.9,.2,1), box-shadow 0.18s}
+.dash-header.scrolled{box-shadow:0 6px 24px rgba(2,6,23,0.06)}
+.icon-btn{transition:transform 0.18s cubic-bezier(.2,.9,.2,1)}
+
+/* small hover effects */
+.dash-header .icon:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(16,24,40,0.06)}
+
