@@ -21,6 +21,7 @@ export default function CRUDTable({ path, columns, idKey: propIdKey }){
     columns.forEach(c => { if (c.key !== idKey) obj[c.key] = '' })
     return obj
   })
+  const [editingId, setEditingId] = useState(null)
 
   useEffect(()=>{
     fetchList()
@@ -54,11 +55,20 @@ export default function CRUDTable({ path, columns, idKey: propIdKey }){
     e.preventDefault()
     setError(null)
     try{
-      const res = await fetch(`${API_BASE}/${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      })
+      let res
+      if(editingId){
+        res = await fetch(`${API_BASE}/${path}/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form)
+        })
+      } else {
+        res = await fetch(`${API_BASE}/${path}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form)
+        })
+      }
       if(!res.ok){
         let body = ''
         try{ body = await res.text() }catch(e){}
@@ -69,9 +79,25 @@ export default function CRUDTable({ path, columns, idKey: propIdKey }){
       const reset = {}
       columns.forEach(c => { if (c.key !== idKey) reset[c.key] = '' })
       setForm(reset)
+      setEditingId(null)
     }catch(err){
       setError(err.message)
     }
+  }
+
+  function handleEdit(item){
+    const reset = {}
+    columns.forEach(c => { if (c.key !== idKey) reset[c.key] = item[c.key] ?? '' })
+    setForm(reset)
+    setEditingId(item[idKey] ?? item.id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function handleCancelEdit(){
+    const reset = {}
+    columns.forEach(c => { if (c.key !== idKey) reset[c.key] = '' })
+    setForm(reset)
+    setEditingId(null)
   }
 
   async function handleDelete(id){
@@ -106,7 +132,8 @@ export default function CRUDTable({ path, columns, idKey: propIdKey }){
               className="crud-input"
             />
           ))}
-          <button className="btn btn-primary" type="submit">Add</button>
+          <button className="btn btn-primary" type="submit">{editingId ? 'Save' : 'Add'}</button>
+          {editingId && <button type="button" className="btn" onClick={handleCancelEdit} style={{marginLeft:8}}>Cancel</button>}
         </form>
       </div>
 
@@ -130,6 +157,7 @@ export default function CRUDTable({ path, columns, idKey: propIdKey }){
               <tr key={item[idKey] ?? item.id}>
                 {columns.map(c=> <td key={c.key}>{item[c.key]}</td>)}
                 <td>
+                  <button className="btn-ghost" onClick={()=> handleEdit(item)}>Edit</button>
                   <button className="btn-ghost" onClick={()=> handleDelete(item[idKey] ?? item.id)}>Delete</button>
                 </td>
               </tr>

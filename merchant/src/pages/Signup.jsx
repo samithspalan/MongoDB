@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000'
 
-export default function Login(){
+export default function Signup(){
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { isDark, toggleTheme } = useTheme()
@@ -17,13 +17,13 @@ export default function Login(){
     e.preventDefault()
     setError(null)
     try{
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      const res = await fetch(`${API_BASE}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Login failed')
+      if (!res.ok) throw new Error(data.message || 'Signup failed')
       localStorage.setItem('token', data.token)
       navigate('/dashboard')
     }catch(err){
@@ -51,8 +51,8 @@ export default function Login(){
       <div className="auth-root login-auth-root">
         <div className="auth-card">
           <div className="auth-card-inner">
-            <h2>{t('signIn')}</h2>
-            <p className="muted">{t('loginSubtitle')}</p>
+            <h2>{t('signUp')}</h2>
+            <p className="muted">Create an account to manage your fleet</p>
             <form onSubmit={handleSubmit} className="auth-form">
               <label>
                 {t('username')}
@@ -64,11 +64,11 @@ export default function Login(){
               </label>
               {error && <div className="form-error">{error}</div>}
               <div className="auth-actions">
-                <button type="submit" className="btn btn-primary">{t('logIn')}</button>
+                <button type="submit" className="btn btn-primary">{t('signUp')}</button>
               </div>
             </form>
             <div style={{marginTop:12}}>
-              Don't have an account? <Link to="/signup">Sign up</Link>
+              Already have an account? <Link to="/login">Sign in</Link>
             </div>
           </div>
         </div>
