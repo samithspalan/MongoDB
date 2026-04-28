@@ -1,3 +1,4 @@
+// Server initialization
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./db.js";
@@ -9,6 +10,7 @@ import cargoRoutes from "./routes/cargoRoutes.js";
 import crewRoutes from "./routes/crewRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import statsRoutes from "./routes/statsRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -22,6 +24,7 @@ app.use("/cargo", cargoRoutes);
 app.use("/crew", crewRoutes);
 app.use("/auth", authRoutes);
 app.use("/stats", statsRoutes);
+app.use("/ai", aiRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ message: "Backend is running" });

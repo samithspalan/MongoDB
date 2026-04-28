@@ -9,6 +9,7 @@ import Ports from './pages/dashboard/Ports'
 import Voyages from './pages/dashboard/Voyages'
 import Cargo from './pages/dashboard/Cargo'
 import Crew from './pages/dashboard/Crew'
+import AIQuery from './pages/dashboard/AIQuery'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="voyages" element={<Voyages />} />
         <Route path="cargo" element={<Cargo />} />
         <Route path="crew" element={<Crew />} />
+        <Route path="ai-query" element={<AIQuery />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

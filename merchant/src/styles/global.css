@@ -227,6 +227,7 @@ html:not(.dark) body{
 
 /* Crew nav (6th link) background */
 .dash-sidebar nav a:nth-of-type(6){ background: linear-gradient(90deg,#c084fc,#7dd3fc); color: #08121a; box-shadow:0 10px 24px rgba(125,211,252,0.12)}
+.dash-sidebar nav a:nth-of-type(7){ background: linear-gradient(90deg,#f472b6,#fb7185); color: #ffffff; box-shadow:0 10px 24px rgba(251,113,133,0.12)}
 
 /* Reduce horizontal padding for overview so content spans wider */
 .page-root.overview-full .dashboard-overview{

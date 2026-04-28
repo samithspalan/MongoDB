@@ -139,6 +139,7 @@ export default function DashboardLayout(){
             <NavLink to="voyages" className={({isActive})=> isActive? 'active' : ''}>{t('voyages')}</NavLink>
             <NavLink to="cargo" className={({isActive})=> isActive? 'active' : ''}>{t('cargo')}</NavLink>
             <NavLink to="crew" className={({isActive})=> isActive? 'active' : ''}>{t('crew')}</NavLink>
+            <NavLink to="ai-query" className={({isActive})=> isActive? 'active' : ''}>AI Query</NavLink>
           </nav>
         </aside>
 
