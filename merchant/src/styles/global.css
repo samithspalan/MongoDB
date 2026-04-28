@@ -163,7 +163,7 @@ html:not(.dark) body{
   min-width:140px;
   transition:transform .14s ease, box-shadow .14s ease, opacity .14s ease;
   box-shadow: none;
-  background: transparent;
+  background: var(--card-alt, transparent);
   color:var(--text);
 }
 .dash-sidebar a:hover{ transform:translateY(-3px); }
@@ -175,6 +175,7 @@ html:not(.dark) body{
 .dash-sidebar nav a:nth-of-type(3){ background: linear-gradient(90deg,#9be15d,#00e3ae); color:#082014; box-shadow:0 10px 24px rgba(0,227,174,0.12)}
 .dash-sidebar nav a:nth-of-type(4){ background: linear-gradient(90deg,#60a5fa,#7dd3fc); color:#041b2a; box-shadow:0 10px 24px rgba(96,165,250,0.12)}
 .dash-sidebar nav a:nth-of-type(5){ background: linear-gradient(90deg,#d6a1ff,#ff8ac1); color:#20102a; box-shadow:0 10px 24px rgba(214,161,255,0.12)}
+.dash-sidebar nav a:nth-of-type(6){ background: linear-gradient(90deg,#7c3aed,#60a5fa); color: #ffffff; box-shadow:0 10px 24px rgba(124,58,237,0.12)}
 
 /* active state: stronger shadow and subtle scale */
 .dash-sidebar a.active{ box-shadow:0 14px 36px rgba(2,6,23,0.18); transform:translateY(-4px) scale(1.03); }
@@ -206,7 +207,32 @@ html:not(.dark) body{
 .settings-menu .profile-name{font-size:0.9rem;color:var(--muted);padding:0.25rem 0.4rem}
 .settings-menu .btn-ghost{align-self:flex-start;margin-top:0.25rem}
 
-.page-root{background:var(--card);padding:1.25rem;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.04);width:calc(100% - 3rem);max-width:900px;position:relative;left:50%;transform:translateX(-50%)}
+.page-root{background:var(--card);padding:1.25rem;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.04);width:calc(100% - 3rem);max-width:900px;position:relative}
+
+/* Full-width override for the overview page */
+.page-root.overview-full{
+  width:100% !important;
+  max-width:100% !important;
+  left:0 !important;
+  transform:none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* When overview is active, allow the content area to use full width (don't center) */
+.dash-content.overview-content{justify-content:flex-start;padding-left:0;padding-right:0}
+
+/* Remove page-root inner padding for overview to maximize horizontal space */
+.page-root.overview-full{padding-left:0 !important;padding-right:0 !important}
+
+/* Crew nav (6th link) background */
+.dash-sidebar nav a:nth-of-type(6){ background: linear-gradient(90deg,#c084fc,#7dd3fc); color: #08121a; box-shadow:0 10px 24px rgba(125,211,252,0.12)}
+
+/* Reduce horizontal padding for overview so content spans wider */
+.page-root.overview-full .dashboard-overview{
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
 
 /* Animated connector line between active nav item and the page card */
 .nav-connector{position:absolute;height:6px;left:0;top:0;width:0;border-radius:6px;opacity:0;transition:top .32s ease,left .36s ease,width .45s cubic-bezier(.2,.9,.2,1),opacity .18s ease;z-index:45;pointer-events:none}

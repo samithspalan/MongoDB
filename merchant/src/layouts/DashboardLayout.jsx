@@ -133,6 +133,7 @@ export default function DashboardLayout(){
       <div className="dash-body">
         <aside className={`dash-sidebar ${open? 'open' : 'closed'}`}>
           <nav>
+            <NavLink to="overview" className={({isActive})=> isActive? 'active' : ''}>{t('overview') || 'Overview'}</NavLink>
             <NavLink to="ships" className={({isActive})=> isActive? 'active' : ''}>{t('ships')}</NavLink>
             <NavLink to="ports" className={({isActive})=> isActive? 'active' : ''}>{t('ports')}</NavLink>
             <NavLink to="voyages" className={({isActive})=> isActive? 'active' : ''}>{t('voyages')}</NavLink>

@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import DashboardLayout from './layouts/DashboardLayout'
+import DashboardOverview from './pages/DashboardOverview'
 import Ships from './pages/dashboard/Ships'
 import Ports from './pages/dashboard/Ports'
 import Voyages from './pages/dashboard/Voyages'
@@ -17,7 +18,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
       <Route path="/dashboard" element={<DashboardLayout />}>
-        <Route index element={<Navigate to="ships" replace />} />
+        <Route index element={<Navigate to="overview" replace />} />
+        <Route path="overview" element={<DashboardOverview />} />
         <Route path="ships" element={<Ships />} />
         <Route path="ports" element={<Ports />} />
         <Route path="voyages" element={<Voyages />} />

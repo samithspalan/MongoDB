@@ -8,6 +8,7 @@ import voyageRoutes from "./routes/voyageRoutes.js";
 import cargoRoutes from "./routes/cargoRoutes.js";
 import crewRoutes from "./routes/crewRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ app.use("/voyages", voyageRoutes);
 app.use("/cargo", cargoRoutes);
 app.use("/crew", crewRoutes);
 app.use("/auth", authRoutes);
+app.use("/stats", statsRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ message: "Backend is running" });
